@@ -1,0 +1,2534 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>零基础搭建 AI 聊天机器人 - AstrBot + NapCatQQ 完整教程 v1.5</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #ec4899;
+            --primary-dark: #db2777;
+            --primary-light: #f472b6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 182, 193, 0.4);
+            --glass-hover: rgba(255, 255, 255, 0.95);
+            --blur-amount: 20px;
+            --radius: 12px;
+            --radius-lg: 20px;
+            --sidebar-width: 280px;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            color: var(--text-primary);
+            line-height: 1.8;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 装饰性粉色光斑 */
+        body::before,
+        body::after,
+        .ambient-orb {
+            content: '';
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::before {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(236, 72, 153, 0.08) 0%, transparent 70%);
+            filter: blur(60px);
+            top: -100px;
+            left: 20%;
+            animation: float-orb 25s ease-in-out infinite;
+        }
+
+        body::after {
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(244, 114, 182, 0.06) 0%, transparent 70%);
+            filter: blur(50px);
+            bottom: 10%;
+            right: 10%;
+            animation: float-orb 30s ease-in-out infinite reverse;
+            animation-delay: -15s;
+        }
+
+        .ambient-orb {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(251, 207, 232, 0.1) 0%, transparent 70%);
+            filter: blur(40px);
+            top: 50%;
+            left: 60%;
+            animation: float-orb 20s ease-in-out infinite;
+            animation-delay: -8s;
+        }
+
+        @keyframes float-orb {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(30px, -20px) scale(1.03); }
+            50% { transform: translate(-20px, 30px) scale(0.98); }
+            75% { transform: translate(25px, 15px) scale(1.02); }
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            color: var(--text-primary);
+            line-height: 1.8;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 装饰性粉色光斑 */
+        body::before,
+        body::after,
+        .ambient-orb {
+            content: '';
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::before {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(236, 72, 153, 0.08) 0%, transparent 70%);
+            filter: blur(60px);
+            top: -100px;
+            left: 20%;
+            animation: float-orb 25s ease-in-out infinite;
+        }
+
+        body::after {
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(244, 114, 182, 0.06) 0%, transparent 70%);
+            filter: blur(50px);
+            bottom: 10%;
+            right: 10%;
+            animation: float-orb 30s ease-in-out infinite reverse;
+            animation-delay: -15s;
+        }
+
+        .ambient-orb {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(251, 207, 232, 0.1) 0%, transparent 70%);
+            filter: blur(40px);
+            top: 50%;
+            left: 60%;
+            animation: float-orb 20s ease-in-out infinite;
+            animation-delay: -8s;
+        }
+
+        @keyframes float-orb {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(30px, -20px) scale(1.03); }
+            50% { transform: translate(-20px, 30px) scale(0.98); }
+            75% { transform: translate(25px, 15px) scale(1.02); }
+        }
+
+        /* ====== Layout ====== */
+        .layout {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ====== Main Content ====== */
+        .main-content {
+            flex: 1;
+            padding: 40px 60px 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+            margin-left: 320px;
+        }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 60px 20px 50px;
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 700px;
+            height: 350px;
+            background: radial-gradient(ellipse, rgba(255, 255, 255, 0.6) 0%, transparent 70%);
+            filter: blur(40px);
+            opacity: 0.9;
+            pointer-events: none;
+            z-index: -1;
+        }
+        /* 左侧光斑 */
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 30%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 182, 193, 0.2) 0%, transparent 70%);
+            filter: blur(50px);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .hero-icon {
+            font-size: 60px;
+            display: block;
+            margin: 0 auto 20px;
+            animation: float 4s ease-in-out infinite;
+            transform-style: preserve-3d;
+            filter:
+                drop-shadow(0 8px 20px rgba(236, 72, 153, 0.35))
+                drop-shadow(0 2px 6px rgba(236, 72, 153, 0.2));
+            /* 3D 浮动感 */
+            text-shadow:
+                0 4px 8px rgba(236, 72, 153, 0.3),
+                0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+            50% { transform: translateY(-12px) rotate(3deg) scale(1.05); }
+        }
+
+        .hero h1 {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--dark);
+            letter-spacing: 2px;
+            margin: 0 auto 16px;
+            line-height: 1.3;
+            position: relative;
+            transform-style: preserve-3d;
+            text-shadow:
+                0 1px 0 rgba(255, 255, 255, 0.9),
+                0 2px 4px rgba(255, 255, 255, 0.6),
+                0 4px 12px rgba(236, 72, 153, 0.15),
+                0 6px 20px rgba(0, 0, 0, 0.06);
+            transition: all 0.4s ease;
+        }
+        /* 标题装饰下划线 */
+        .hero h1::after {
+            content: '';
+            display: block;
+            width: 120px;
+            height: 4px;
+            margin: 14px auto 0;
+            border-radius: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            box-shadow: 0 0 12px rgba(236, 72, 153, 0.5), 0 0 24px rgba(236, 72, 153, 0.25);
+            transform: translateZ(10px);
+        }
+        /* 标题悬浮时加深 */
+        .hero:hover h1 {
+            text-shadow:
+                0 1px 0 rgba(255, 255, 255, 0.95),
+                0 2px 4px rgba(255, 255, 255, 0.7),
+                0 4px 16px rgba(236, 72, 153, 0.25),
+                0 8px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .hero-desc {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin: 0 auto 28px;
+            max-width: 500px;
+            letter-spacing: 0.5px;
+            transform: translateZ(5px);
+        }
+
+        .hero-badges {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .hero-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 10px 18px;
+            border-radius: 24px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--dark);
+            border: 1px solid rgba(255, 182, 193, 0.4);
+            box-shadow:
+                0 4px 20px rgba(236, 72, 153, 0.1),
+                0 2px 6px rgba(236, 72, 153, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 1);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform-style: preserve-3d;
+        }
+
+        .hero-badge:hover {
+            background: #ffffff;
+            transform: translateY(-4px) translateZ(15px) scale(1.05);
+            box-shadow:
+                0 16px 45px rgba(236, 72, 153, 0.22),
+                0 8px 16px rgba(236, 72, 153, 0.12),
+                inset 0 1px 0 rgba(255, 255, 255, 1);
+        }
+
+        .hero-badge span {
+            font-size: 16px;
+        }
+
+        /* Section Card - 3D 玻璃效果 */
+        .section {
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--blur-amount));
+            -webkit-backdrop-filter: blur(var(--blur-amount));
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 36px 40px;
+            margin-bottom: 24px;
+            position: relative;
+            scroll-margin-top: 40px;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform-style: preserve-3d;
+            /* 3D 阴影层次 */
+            box-shadow: 
+                0 10px 40px rgba(236, 72, 153, 0.1),
+                0 4px 12px rgba(0, 0, 0, 0.04),
+                0 2px 4px rgba(0, 0, 0, 0.02),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+
+        .section:hover {
+            background: var(--glass-hover);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: 
+                0 20px 60px rgba(236, 72, 153, 0.18),
+                0 10px 20px rgba(0, 0, 0, 0.06),
+                0 4px 8px rgba(0, 0, 0, 0.04),
+                inset 0 1px 0 rgba(255, 255, 255, 1);
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 50%, #fbcfe8 100%);
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+            box-shadow: 0 2px 10px rgba(236, 72, 153, 0.4);
+        }
+
+        /* 3D 内边框效果 */
+        .section::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: var(--radius-lg);
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.6) 0%, rgba(255,182,193,0.2) 50%, rgba(255,255,255,0.3) 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        .section-title {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+        }
+
+        .section-title .icon-box {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+            box-shadow: 
+                0 4px 15px rgba(236, 72, 153, 0.4),
+                0 2px 6px rgba(236, 72, 153, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            transform: translateZ(10px);
+        }
+
+        h3 {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--dark);
+            margin: 32px 0 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        p {
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            line-height: 1.9;
+        }
+
+        .text-lg { font-size: 16px; }
+
+        /* Highlight Box - 3D 玻璃效果 */
+        .highlight-box {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 182, 193, 0.4);
+            border-left: 4px solid var(--primary);
+            padding: 18px 22px;
+            border-radius: var(--radius);
+            margin: 18px 0;
+            box-shadow: 
+                0 4px 20px rgba(236, 72, 153, 0.08),
+                0 2px 6px rgba(0, 0, 0, 0.03),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            transform-style: preserve-3d;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .highlight-box:hover {
+            box-shadow: 
+                0 8px 30px rgba(236, 72, 153, 0.12),
+                0 4px 10px rgba(0, 0, 0, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 1);
+            transform: translateX(4px) translateZ(5px);
+        }
+
+        .highlight-box p {
+            color: var(--dark);
+            font-weight: 600;
+            margin: 0;
+            font-size: 15px;
+        }
+
+        /* Alert Box - 3D 玻璃效果 */
+        .alert {
+            padding: 18px 22px;
+            border-radius: var(--radius);
+            margin: 18px 0;
+            padding-left: 52px;
+            position: relative;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 182, 193, 0.3);
+            box-shadow: 
+                0 4px 20px rgba(236, 72, 153, 0.06),
+                0 2px 6px rgba(0, 0, 0, 0.03);
+            transform-style: preserve-3d;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .alert:hover {
+            transform: translateY(-2px) translateZ(3px);
+            box-shadow: 
+                0 8px 30px rgba(236, 72, 153, 0.1),
+                0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .alert::before {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+        }
+
+        .alert-info { 
+            border-left: 4px solid #f472b6;
+            color: var(--dark); 
+        }
+
+        .alert-success { 
+            border-left: 4px solid #34d399;
+            color: #065f46; 
+        }
+
+        .alert-warning { 
+            border-left: 4px solid #fbbf24;
+            color: #92400e; 
+        }
+
+        .alert-danger { 
+            border-left: 4px solid #f87171;
+            color: #991b1b; 
+        }
+
+        /* Step Card - 3D 玻璃效果 */
+        .step-item {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 182, 193, 0.35);
+            border-radius: 16px;
+            padding: 24px;
+            padding-left: 68px;
+            margin: 16px 0;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform-style: preserve-3d;
+            box-shadow: 
+                0 6px 25px rgba(236, 72, 153, 0.08),
+                0 2px 8px rgba(0, 0, 0, 0.04),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+
+        .step-item:hover {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 
+                0 15px 45px rgba(236, 72, 153, 0.15),
+                0 8px 15px rgba(0, 0, 0, 0.06),
+                inset 0 1px 0 rgba(255, 255, 255, 1);
+            transform: translateY(-6px) scale(1.01);
+        }
+
+        .step-num {
+            position: absolute;
+            left: 20px;
+            top: 24px;
+            width: 34px;
+            height: 34px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 15px;
+            box-shadow: 
+                0 4px 12px rgba(236, 72, 153, 0.2),
+                0 2px 4px rgba(236, 72, 153, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            transform: translateZ(10px);
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .step-item:hover .step-num {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            border-color: transparent;
+            box-shadow: 
+                0 6px 20px rgba(236, 72, 153, 0.4),
+                0 3px 8px rgba(236, 72, 153, 0.3);
+            transform: translateZ(15px) scale(1.1);
+        }
+
+        .step-item h4 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        .step-item p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin: 0;
+            line-height: 1.75;
+        }
+
+        .step-item code {
+            background: rgba(255, 182, 193, 0.15);
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-family: 'SF Mono', 'Consolas', monospace;
+            font-size: 13px;
+            color: var(--primary);
+            border: 1px solid rgba(255, 182, 193, 0.3);
+        }
+
+        .step-item a {
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+            background: rgba(255, 182, 193, 0.15);
+            padding: 3px 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 182, 193, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .step-item a:hover { 
+            text-decoration: none;
+            background: rgba(255, 182, 193, 0.25);
+        }
+
+        /* Code Block */
+        .code-block {
+            margin: 20px 0;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(236, 72, 153, 0.1);
+            border: 1px solid rgba(255, 182, 193, 0.3);
+        }
+
+        .code-header {
+            background: #1e293b;
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .code-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .code-dots span {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #475569;
+        }
+
+        .code-dots span:first-child { background: #ef4444; }
+        .code-dots span:nth-child(2) { background: #f59e0b; }
+        .code-dots span:last-child { background: #22c55e; }
+
+        .code-header span {
+            color: #94a3b8;
+            font-size: 13px;
+            margin-left: 8px;
+        }
+
+        .code-body {
+            background: #1e293b;
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        .code-body pre {
+            margin: 0;
+            font-family: 'SF Mono', 'Consolas', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #e2e8f0;
+        }
+
+        .code-body .c { color: #6b7280; }
+        .code-body .v { color: #fbbf24; }
+        .code-body .k { color: #f472b6; }
+
+        /* Feature Grid */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .feature-card {
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 24px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            background: white;
+            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .feature-card .icon {
+            font-size: 36px;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        .feature-card h4 {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 6px;
+        }
+
+        .feature-card p {
+            font-size: 13px;
+            color: #64748b;
+            margin: 0;
+        }
+
+        /* Compare Grid */
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .compare-card {
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .compare-card:hover {
+            background: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        }
+
+        .compare-card h4 {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .compare-card p {
+            font-size: 13px;
+            color: #64748b;
+            margin: 0;
+        }
+
+        .tag {
+            background: var(--gradient);
+            color: white;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        /* Flow Box */
+        .flow-box {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 20px 0;
+            padding: 20px 24px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            justify-content: center;
+        }
+
+        .flow-box .box {
+            padding: 14px 22px;
+            border-radius: var(--radius);
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--dark);
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(129, 140, 248, 0.05) 100%);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .flow-box .box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.12);
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(129, 140, 248, 0.08) 100%);
+        }
+
+        .flow-box .arrow {
+            color: var(--primary);
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .flow-box .step {
+            background: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #1e293b;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .flow-box .arrow {
+            color: var(--primary);
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        /* Table Box - 高斯模糊玻璃 */
+        .table-box {
+            margin: 20px 0;
+            overflow: hidden;
+            border-radius: var(--radius-lg);
+            box-shadow: 0 4px 20px rgba(236, 72, 153, 0.08);
+            border: 1px solid rgba(255, 182, 193, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+        }
+
+        thead {
+            background: rgba(255, 182, 193, 0.1);
+        }
+
+        th {
+            text-align: left;
+            padding: 16px 20px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid rgba(236, 72, 153, 0.2);
+        }
+
+        td {
+            padding: 16px 20px;
+            border-top: 1px solid rgba(255, 182, 193, 0.2);
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background: rgba(255, 182, 193, 0.08);
+        }
+
+        /* Flow Box - 高斯模糊玻璃 */
+        .flow-box {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 20px 0;
+            padding: 20px 24px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 182, 193, 0.35);
+            border-radius: var(--radius-lg);
+            justify-content: center;
+        }
+
+        .flow-box .box {
+            padding: 14px 22px;
+            border-radius: var(--radius);
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--dark);
+            background: rgba(255, 182, 193, 0.15);
+            border: 1px solid rgba(255, 182, 193, 0.3);
+            box-shadow: 0 2px 10px rgba(236, 72, 153, 0.06);
+            transition: all 0.3s ease;
+        }
+
+        .flow-box .box:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 182, 193, 0.25);
+            box-shadow: 0 6px 20px rgba(236, 72, 153, 0.1);
+        }
+
+        .flow-box .arrow {
+            color: var(--primary);
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        thead {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(129, 140, 248, 0.05) 100%);
+        }
+
+        th {
+            text-align: left;
+            padding: 16px 20px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid rgba(99, 102, 241, 0.15);
+        }
+
+        td {
+            padding: 16px 20px;
+            border-top: 1px solid rgba(99, 102, 241, 0.08);
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background: rgba(99, 102, 241, 0.04);
+        }
+
+        /* FAQ Item */
+        .faq-item {
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 24px;
+            margin: 16px 0;
+        }
+
+        .faq-item h4 {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .faq-item h4::before {
+            content: '❓';
+        }
+
+        .faq-item p {
+            margin: 0;
+            color: #64748b;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 60px 40px;
+            color: #94a3b8;
+            font-size: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        .footer p {
+            text-align: center;
+            margin: 8px 0;
+            width: 100%;
+        }
+
+        .footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .footer-line {
+            width: 60px;
+            height: 4px;
+            background: var(--gradient);
+            border-radius: 2px;
+            margin: 0 auto 24px;
+        }
+
+        /* ====== Clock Widget - 透明玻璃效果 ====== */
+        .clock-widget {
+            position: fixed;
+            left: 20px;
+            top: 20px;
+            width: var(--sidebar-width);
+            padding: 14px 16px;
+            box-sizing: border-box;
+            border-radius: 16px;
+            transform-style: preserve-3d;
+            z-index: 101;
+            text-align: center;
+            box-shadow:
+                0 20px 60px rgba(0, 0, 0, 0.12),
+                0 8px 25px rgba(0, 0, 0, 0.08),
+                0 4px 10px rgba(0, 0, 0, 0.05);
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            overflow: hidden;
+        }
+        /* 顶部光泽条 */
+        .clock-widget::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 50%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, transparent 100%);
+            border-radius: 16px 16px 0 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+        /* 玻璃边框高光 */
+        .clock-widget::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 16px;
+            padding: 1px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.2) 60%, transparent 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+        .clock-widget:hover {
+            transform: translateY(-6px) translateZ(20px) scale(1.03);
+            background: rgba(255, 255, 255, 0.32);
+            box-shadow:
+                0 30px 80px rgba(0, 0, 0, 0.15),
+                0 12px 35px rgba(0, 0, 0, 0.1),
+                0 6px 15px rgba(0, 0, 0, 0.06);
+        }
+        .clock-widget > * {
+            position: relative;
+            z-index: 1;
+        }
+        .clock-date {
+            font-size: 14px;
+            color: var(--primary);
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+        .clock-time {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--dark);
+            letter-spacing: 2px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .clock-weather {
+            margin-top: 6px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            text-align: center;
+            min-height: 16px;
+        }
+
+        /* ====== TOC Sidebar - 3D 悬浮效果增强 ====== */
+        .toc-sidebar {
+            position: fixed;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: var(--sidebar-width);
+            height: 50vh;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            border-radius: 20px;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            /* 多层阴影立体感 */
+            box-shadow:
+                0 30px 80px rgba(236, 72, 153, 0.3),
+                0 15px 40px rgba(0, 0, 0, 0.12),
+                0 6px 15px rgba(0, 0, 0, 0.06),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6),
+                inset 0 -2px 8px rgba(0, 0, 0, 0.06);
+            background: linear-gradient(145deg, #f9a8d4 0%, #ec4899 35%, #db2777 70%, #be185d 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        /* 顶部大面积光泽 */
+        .toc-sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 45%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.06) 60%, transparent 100%);
+            border-radius: 20px 20px 0 0;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .toc-sidebar:hover {
+            transform: translateY(-50%) translateZ(25px) scale(1.04);
+            box-shadow:
+                0 40px 100px rgba(236, 72, 153, 0.38),
+                0 20px 55px rgba(0, 0, 0, 0.15),
+                0 8px 20px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.7),
+                inset 0 -3px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .toc-header {
+            background: linear-gradient(145deg, #f9a8d4 0%, #ec4899 40%, #db2777 100%);
+            padding: 16px 20px;
+            flex-shrink: 0;
+            box-shadow:
+                0 4px 20px rgba(0, 0, 0, 0.18),
+                inset 0 1px 0 rgba(255, 255, 255, 0.35),
+                inset 0 -2px 6px rgba(0, 0, 0, 0.08);
+            position: relative;
+            z-index: 2;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+        }
+
+        .toc-header h3 {
+            font-size: 15px;
+            font-weight: 700;
+            margin: 0;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+        }
+
+        .toc-header p {
+            font-size: 11px;
+            margin: 4px 0 0;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+        }
+
+        .toc-body {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.97);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            overflow-y: auto;
+            padding: 10px 0;
+            position: relative;
+            z-index: 1;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .toc-body::-webkit-scrollbar { display: none; }
+
+        .toc-section {
+            padding: 12px 16px 6px;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .toc-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-decoration: none;
+            color: #555;
+            font-size: 13px;
+            font-weight: 500;
+            margin: 2px 10px;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .toc-item:hover {
+            background: rgba(236, 72, 153, 0.1);
+            color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .toc-item.active {
+            background: rgba(236, 72, 153, 0.15);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .toc-item .num {
+            width: 24px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid var(--primary);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            margin-right: 10px;
+            flex-shrink: 0;
+            transition: all 0.25s ease;
+            color: var(--primary);
+        }
+
+        .toc-item:hover .num,
+        .toc-item.active .num {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        .toc-progress {
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.98);
+            flex-shrink: 0;
+        }
+
+        .toc-progress-text {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .toc-progress-bar {
+            height: 6px;
+            background: rgba(236, 72, 153, 0.15);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .toc-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #22c55e 0%, #4ade80 100%);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 3px;
+            box-shadow: 0 0 8px #22c55e;
+        }
+
+        .toc-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            padding: 14px 18px;
+            flex-shrink: 0;
+            box-shadow: 
+                0 4px 20px rgba(236, 72, 153, 0.4),
+                inset 0 -2px 8px rgba(0, 0, 0, 0.1);
+            transform: translateZ(30px);
+            position: relative;
+            z-index: 2;
+        }
+
+        .toc-header h3 {
+            font-size: 15px;
+            font-weight: 800;
+            margin-bottom: 2px;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .toc-header p {
+            font-size: 11px;
+            margin: 0;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+
+        .toc-body {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.97);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            overflow-y: auto;
+            padding: 6px 0;
+            transform: translateZ(10px);
+            position: relative;
+            z-index: 1;
+        }
+
+        .toc-body::-webkit-scrollbar {
+            width: 4px;
+        }
+        .toc-body::-webkit-scrollbar-track {
+            background: rgba(236, 72, 153, 0.08);
+            border-radius: 2px;
+        }
+        .toc-body::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--primary), var(--primary-light));
+            border-radius: 2px;
+        }
+        .toc-body::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, var(--primary-light), var(--primary));
+        }
+
+        .toc-section {
+            padding: 8px 16px 4px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .toc-item {
+            display: flex;
+            align-items: center;
+            padding: 5px 14px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            text-decoration: none;
+            color: #4a4a4a;
+            font-size: 13px;
+            font-weight: 600;
+            margin: 1px 8px;
+            border-radius: 8px;
+            transform-style: preserve-3d;
+            letter-spacing: 0.2px;
+            position: relative;
+            overflow: hidden;
+        }
+        .toc-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, var(--primary), var(--primary-light));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .toc-item:hover {
+            background: linear-gradient(90deg, rgba(255, 182, 193, 0.25) 0%, rgba(255, 182, 193, 0.1) 100%);
+            color: var(--primary);
+            transform: translateX(3px) translateZ(4px);
+            box-shadow: -3px 0 12px rgba(236, 72, 153, 0.12);
+        }
+        .toc-item:hover::before {
+            opacity: 1;
+        }
+
+        .toc-item.active {
+            background: linear-gradient(90deg, rgba(236, 72, 153, 0.2) 0%, rgba(236, 72, 153, 0.08) 100%);
+            color: var(--primary);
+            font-weight: 700;
+            box-shadow: -3px 0 15px rgba(236, 72, 153, 0.18);
+        }
+        .toc-item.active::before {
+            opacity: 1;
+        }
+
+        .toc-item .num {
+            width: 22px;
+            height: 22px;
+            background: rgba(255, 255, 255, 0.98);
+            border: 2px solid rgba(236, 72, 153, 0.35);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 800;
+            margin-right: 10px;
+            flex-shrink: 0;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            color: var(--primary);
+            box-shadow: 0 2px 6px rgba(236, 72, 153, 0.12);
+            transform: translateZ(6px);
+        }
+
+        .toc-item:hover .num {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.35);
+            transform: translateZ(10px) scale(1.05);
+        }
+
+        .toc-item.active .num {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            border-color: transparent;
+            font-weight: 800;
+            box-shadow: 0 5px 15px rgba(236, 72, 153, 0.4);
+            transform: translateZ(10px);
+        }
+
+        .toc-progress {
+            padding: 14px 18px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.98) 100%);
+            border-top: 1px solid rgba(236, 72, 153, 0.12);
+            flex-shrink: 0;
+        }
+
+        .toc-progress-text {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .toc-progress-bar {
+            height: 7px;
+            background: rgba(236, 72, 153, 0.08);
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .toc-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #22c55e 0%, #4ade80 60%, #86efac 100%);
+            width: 0%;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 4px;
+            box-shadow: 0 0 10px #22c55e, 0 0 20px rgba(34, 197, 94, 0.6);
+            position: relative;
+        }
+        .toc-progress-fill::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 25px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5));
+            border-radius: 0 4px 4px 0;
+        }
+
+        /* Progress Widget - 3D 悬浮效果 */
+        #progressWidget {
+            position: fixed;
+            left: 20px;
+            bottom: 20px;
+            width: var(--sidebar-width);
+            padding: 14px 18px;
+            box-sizing: border-box;
+            border-radius: 16px;
+            transform-style: preserve-3d;
+            z-index: 100;
+            /* 多层阴影营造立体深度 */
+            box-shadow:
+                0 30px 80px rgba(34, 197, 94, 0.3),
+                0 15px 40px rgba(0, 0, 0, 0.1),
+                0 6px 15px rgba(0, 0, 0, 0.06),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9),
+                inset 0 -2px 6px rgba(0, 0, 0, 0.05);
+            background: linear-gradient(145deg, #ffffff 0%, #f0fdf4 50%, #dcfce7 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(34, 197, 94, 0.25);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            /* 顶部光泽 */
+            overflow: hidden;
+        }
+        /* 顶部光泽条 */
+        #progressWidget::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 50%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.6) 0%, transparent 100%);
+            border-radius: 16px 16px 0 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+        /* 内边框高光 */
+        #progressWidget::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 16px;
+            padding: 1px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.15) 60%, transparent 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+        #progressWidget:hover {
+            transform: translateY(-6px) translateZ(20px) scale(1.03);
+            box-shadow:
+                0 40px 100px rgba(34, 197, 94, 0.38),
+                0 20px 55px rgba(0, 0, 0, 0.13),
+                0 8px 20px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 1),
+                inset 0 -3px 8px rgba(0, 0, 0, 0.06);
+        }
+        #progressWidget > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ====== Cursor Star Trail ====== */
+        .star-trail {
+            position: fixed;
+            width: 24px;
+            height: 24px;
+            pointer-events: none;
+            z-index: 9998;
+            animation: starFade 0.8s ease-out forwards;
+        }
+
+        .star-trail svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 0 6px #ffd700) drop-shadow(0 0 12px rgba(255, 215, 0, 0.6));
+        }
+
+        @keyframes starFade {
+            0% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(0.2) rotate(180deg);
+                opacity: 0;
+            }
+        }
+
+        /* Back to Top */
+        .back-to-top {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            width: 48px;
+            height: 48px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            border: none;
+            z-index: 1000;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            background: var(--primary);
+        }
+
+        .back-to-top:hover svg {
+            stroke: white;
+        }
+
+        .back-to-top svg {
+            width: 24px;
+            height: 24px;
+            stroke: #64748b;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .toc-sidebar {
+                display: none;
+            }
+            #progressWidget {
+                display: none;
+            }
+            .main-content {
+                max-width: 900px;
+                margin-left: 0;
+                padding: 40px 40px 60px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 24px 20px;
+            }
+            .hero h1 {
+                font-size: 32px;
+            }
+            .section {
+                padding: 28px 24px;
+            }
+            .compare-grid {
+                grid-template-columns: 1fr;
+            }
+            .flow-box {
+                flex-direction: column;
+            }
+            .flow-box .arrow {
+                transform: rotate(90deg);
+            }
+        }
+
+        /* ====== Sakura Petals ====== */
+        .sakura-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            overflow: hidden;
+        }
+
+        .sakura {
+            position: absolute;
+            top: -40px;
+            opacity: 0;
+            animation: sakuraFall linear infinite;
+        }
+
+        @keyframes sakuraFall {
+            0% {
+                transform: translateY(0) rotate(0deg) translateX(0);
+                opacity: 0;
+            }
+            5% {
+                opacity: 0.9;
+            }
+            95% {
+                opacity: 0.9;
+            }
+            100% {
+                transform: translateY(105vh) rotate(720deg) translateX(120px);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 高斯模糊光斑 -->
+    <div class="ambient-orb"></div>
+
+    <!-- Sakura Petals Container -->
+    <div class="sakura-container" id="sakuraContainer"></div>
+
+    <div class="layout">
+        <main class="main-content">
+            <!-- Hero -->
+            <header class="hero">
+                <span class="hero-icon">🤖</span>
+                <h1>零基础搭建 AI 聊天机器人</h1>
+                <p class="hero-desc">基于 AstrBot + NapCatQQ，无需复杂部署，小白也能轻松上手！</p>
+                <div class="hero-badges">
+                    <span class="hero-badge">📚 完整图文教程</span>
+                    <span class="hero-badge">⏱️ 预计阅读 20 分钟</span>
+                    <span class="hero-badge">🛡️ 零基础友好</span>
+                </div>
+            </header>
+
+            <!-- Section 1: Intro -->
+            <section class="section" id="intro">
+                <h2 class="section-title">
+                    <span class="icon-box">🚀</span>
+                    项目简介
+                </h2>
+
+                <div class="highlight-box">
+                    <p>这两个工具就像是一对配合默契的搭档：NapCatQQ 负责"操控 QQ"，AstrBot 负责"思考和回复"。</p>
+                </div>
+
+                <h3>🐱 NapCatQQ 是什么？</h3>
+                <p class="text-lg">NapCatQQ（猫猫框架）是一个基于 QQ 的 Bot 框架。它通过技术手段获取了 QQ 的发送/接收消息接口，让你可以用程序控制 QQ 账号。</p>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <span class="icon">🔐</span>
+                        <h4>安全稳定</h4>
+                        <p>非侵入式，不破坏原文件</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="icon">🌐</span>
+                        <h4>标准协议</h4>
+                        <p>遵循 OneBot 规范</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="icon">💻</span>
+                        <h4>多平台支持</h4>
+                        <p>Win/Linux/Mac 均可</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="icon">🎯</span>
+                        <h4>WebUI 配置</h4>
+                        <p>可视化操作</p>
+                    </div>
+                </div>
+
+                <h3>✨ AstrBot 是什么？</h3>
+                <p class="text-lg">AstrBot 是一个开源的一站式 Agentic 个人和群聊助手。可以连接到 QQ、飞书、钉钉等 18+ 平台，通过 AI 模型实现智能对话。🚀</p>
+
+                <div class="highlight-box">
+                    <p>🤯 简单来说：NapCat 负责"听"，AstrBot 负责"想"，配合天衣无缝！</p>
+                </div>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <span class="icon">💬</span>
+                        <h4>多平台接入</h4>
+                        <p>18+ 消息平台支持</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="icon">🤖</span>
+                        <h4>AI 赋能</h4>
+                        <p>支持多种 AI 模型</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="icon">🔌</span>
+                        <h4>插件系统</h4>
+                        <p>丰富的插件生态</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="icon">🎨</span>
+                        <h4>WebUI 管理</h4>
+                        <p>可视化配置</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2: Principle -->
+            <section class="section" id="principle">
+                <h2 class="section-title">
+                    <span class="icon-box">🔧</span>
+                    工作原理
+                </h2>
+
+                <div class="flow-box">
+                    <span class="box">📱 你发消息</span>
+                    <span class="arrow">→</span>
+                    <span class="box">🐱 NapCat 收到</span>
+                    <span class="arrow">→</span>
+                    <span class="box">🤖 AI 思考中...</span>
+                    <span class="arrow">→</span>
+                    <span class="box">✨ 回复来了</span>
+                    <span class="arrow">→</span>
+                    <span class="box">📱 你收到回复</span>
+                </div>
+
+                <div class="highlight-box">
+                    <p>💡 小科普：NapCat 和 AstrBot 之间用「OneBot 协议」对话，就像两个不同国家的人用同一种语言交流~ 🌐</p>
+                </div>
+
+                <div class="table-box">
+                    <table>
+                        <thead>
+                            <tr><th>组件</th><th>角色</th><th>类比</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>NapCatQQ 🐱</strong></td><td>消息桥梁</td><td>贴心小秘书 - 帮你收发消息</td></tr>
+                            <tr><td><strong>AstrBot 🤖</strong></td><td>AI 大脑</td><td>智慧大脑 - 思考和回答</td></tr>
+                            <tr><td><strong>OneBot 协议 📡</strong></td><td>通信标准</td><td>共同语言 - 让他们能对话</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Section 3: NapCat Install -->
+            <section class="section" id="napcat-install">
+                <h2 class="section-title">
+                    <span class="icon-box">📥</span>
+                    安装 NapCatQQ
+                </h2>
+
+                <div class="alert alert-warning">
+                    <strong>📋 前置要求：</strong>确保已安装 QQ（版本尽量最新，推荐 QQ 9.x）~ 别忘了先更新 QQ 哦！🔔
+                </div>
+
+                <h3>Windows 安装</h3>
+
+                <div class="compare-grid">
+                    <div class="compare-card">
+                        <h4>方法一：Shell 一键版 <span class="tag">推荐</span></h4>
+                        <p>内置 QQ，开箱即用，适合新手</p>
+                    </div>
+                    <div class="compare-card">
+                        <h4>方法二：Shell 手动版</h4>
+                        <p>需要单独安装 QQ，配合 NapCat 启动</p>
+                    </div>
+                    <div class="compare-card">
+                        <h4>方法三：LiteLoader 插件版</h4>
+                        <p>通过 QQ 插件方式加载 NapCat</p>
+                    </div>
+                </div>
+
+                <h3>方法一：Windows 一键版（推荐）</h3>
+                <div class="alert alert-info">
+                    <strong>💡 小技巧：</strong>一键版就是点点点，3分钟搞定！懒人福音~ 🙌
+                </div>
+                <div class="step-item">
+                    <div class="step-num">1</div>
+                    <h4>下载 NapCat</h4>
+                    <p>前往 GitHub Releases：<a href="https://github.com/NapNeko/NapCatQQ/releases" target="_blank">github.com/NapNeko/NapCatQQ/releases</a><br>
+                    下载 <code>NapCat.Shell.Windows.Framework.zip</code>（有头绿色版本）</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">2</div>
+                    <h4>解压并运行</h4>
+                    <p>解压到一个没有中文和空格的目录（路径干净很重要！），点击 <code>NapCatInstaller.exe</code> 等待自动配置完成</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">3</div>
+                    <h4>启动 NapCat</h4>
+                    <p>进入 <code>NapCat.XXXX.Framework</code> 目录，双击运行 <code>NapCatWinBootMain.exe</code></p>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">4</div>
+                    <h4>扫码登录</h4>
+                    <p>启动后自动打开 WebUI 界面（默认 <code>http://127.0.0.1:6099</code>），用手机 QQ 扫码登录机器人账号</p>
+                </div>
+
+                <div class="alert alert-success">
+                    <strong>🎉 安装成功！</strong> 登录后可在 NapCat WebUI 中配置 OneBot 服务，成就感满满！
+                </div>
+
+                <h3>方法二：Shell 手动版 🛠️</h3>
+                <div class="step-item">
+                    <div class="step-num">1</div>
+                    <h4>下载 NapCat.Shell.zip 📦</h4>
+                    <p>从 <a href="https://github.com/NapNeko/NapCatQQ/releases" target="_blank">Releases 页面</a> 下载并解压</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">2</div>
+                    <h4>运行启动器</h4>
+                    <p>双击 <code>launcher.bat</code>（Win11）或 <code>launcher-win10.bat</code>（Win10）</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">3</div>
+                    <h4>扫码登录</h4>
+                    <p>扫码登录后等待 NapCat 启动完成</p>
+                </div>
+
+                <h3>🐧 Linux 安装</h3>
+                <div class="alert alert-info">
+                    <strong>💡 小提示：</strong>Linux 用户可以用一行命令搞定，妈妈再也不用担心我装不上啦！
+                </div>
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-dots"><span></span><span></span><span></span></div>
+                        <span>一键安装脚本</span>
+                    </div>
+                    <div class="code-body">
+                        <pre><span class="c"># 标准安装（推荐）</span>
+curl -o napcat.sh https://nclatest.znin.net/NapNeko/NapCat-Installer/main/script/install.sh && bash napcat.sh
+
+<span class="c"># 可视化 TUI 安装</span>
+curl -o napcat.sh https://nclatest.znin.net/NapNeko/NapCat-Installer/main/script/install.sh && bash napcat.sh --tui
+
+<span class="c"># Docker 安装</span>
+curl -o napcat.sh https://nclatest.znin.net/NapNeko/NapCat-Installer/main/script/install.sh && bash napcat.sh --docker y --qq "<span class="v">你的QQ号</span>" --mode ws --confirm</pre>
+                    </div>
+                </div>
+
+                <h3>📱 其他平台</h3>
+                <div class="table-box">
+                    <table>
+                        <thead>
+                            <tr><th>平台</th><th>安装方式</th><th>说明</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>macOS</strong></td><td>专用安装器</td><td>需要 MacOS 12.0+，<a href="https://github.com/NapNeko/NapCat-Mac-Installer/releases/" target="_blank">下载链接</a></td></tr>
+                            <tr><td><strong>Android</strong></td><td>Termux 脚本</td><td><code>curl -o napcat.termux.sh ... && bash napcat.termux.sh</code></td></tr>
+                            <tr><td><strong>群晖 DSM</strong></td><td>Docker</td><td>需注意 ACL 权限配置</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Section 4: NapCat Config -->
+            <section class="section" id="napcat-config">
+                <h2 class="section-title">
+                    <span class="icon-box">⚙️</span>
+                    配置 NapCatQQ
+                </h2>
+
+                <h3>🌐 网络类型说明</h3>
+                <div class="table-box">
+                    <table>
+                        <thead>
+                            <tr><th>类型</th><th>说明</th><th>适用场景</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>HTTP 服务端</strong></td><td>NapCat 作为服务端，接收请求</td><td>AstrBot 作为客户端推送</td></tr>
+                            <tr><td><strong>WebSocket 服务端</strong></td><td>NapCat 作为服务端，双工通信</td><td>AstrBot 作为客户端连接（推荐）</td></tr>
+                            <tr><td><strong>WebSocket 客户端</strong></td><td>NapCat 作为客户端，主动连接</td><td>AstrBot 作为服务端监听</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>通过 WebUI 配置（推荐）</h3>
+                <div class="step-item">
+                    <div class="step-num">1</div>
+                    <h4>打开 WebUI</h4>
+                    <p>访问 <code>http://127.0.0.1:6099</code>，在启动日志中可找到 Token</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">2</div>
+                    <h4>扫码登录</h4>
+                    <p>点击 QRCode 扫码登录，登录后修改密码</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">3</div>
+                    <h4>配置 WebSocket 客户端</h4>
+                    <p>进入「网络配置」→「新建」→「WebSocket 客户端」<br>
+                    URL 填写：<code>ws://127.0.0.1:6199/ws</code><br>
+                    勾选「保存时启用」</p>
+                </div>
+
+                <h3>配置 FFmpeg（音视频处理）</h3>
+                <div class="alert alert-info">
+                    <strong>说明：</strong>自 v4.4.11 起，Windows 和 Mac 已内置 FFmpeg。Linux 用户可能需要手动安装。
+                </div>
+                <div class="step-item">
+                    <div class="step-num">1</div>
+                    <h4>下载 FFmpeg</h4>
+                    <p>从 <a href="https://github.com/BtbN/FFmpeg-Builds/releases" target="_blank">GitHub 下载</a> <code>ffmpeg-master-latest-win64-gpl.zip</code></p>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">2</div>
+                    <h4>解压并配置环境变量</h4>
+                    <p>解压到 <code>C:\Program Files\ffmpeg</code>，确保 <code>bin</code> 目录在 PATH 中<br>
+                    bin 文件夹必须包含：<code>ffmpeg.exe</code>、<code>ffplay.exe</code>、<code>ffprobe.exe</code></p>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">3</div>
+                    <h4>验证</h4>
+                    <p>重启电脑后，在终端运行 <code>ffmpeg -version</code> 验证安装</p>
+                </div>
+            </section>
+
+            <!-- Section 5: AstrBot Install -->
+            <section class="section" id="astrbot-install">
+                <h2 class="section-title">
+                    <span class="icon-box">⚡</span>
+                    安装 AstrBot
+                </h2>
+
+                <div class="alert alert-warning">
+                    <strong>🎯 前置要求：</strong>Python 3.12 或更高版本（推荐使用 uv 包管理器，超快！⚡）
+                </div>
+
+                <h3>Windows / macOS / Linux</h3>
+                <p>是的，你没看错，一个命令全搞定！🤯 不管你是用什么系统， AstrBot 都雨露均沾~</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-dots"><span></span><span></span><span></span></div>
+                        <span>安装命令</span>
+                    </div>
+                    <div class="code-body">
+                        <pre><span class="c"># 使用 uv 安装（推荐，速度快）</span>
+<span class="k">pip</span> install uv
+<span class="k">uv</span> tool install astrbot --python 3.12
+
+<span class="c"># 或使用 pip 安装</span>
+<span class="k">pip</span> install astrbot
+
+<span class="c"># 启动 AstrBot</span>
+astrbot</pre>
+                    </div>
+                </div>
+
+                <h3>Docker 安装</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-dots"><span></span><span></span><span></span></div>
+                        <span>Docker 命令</span>
+                    </div>
+                    <div class="code-body">
+                        <pre><span class="c"># 拉取并运行 AstrBot</span>
+<span class="k">docker</span> run -d \
+  --name astrbot \
+  -p 6185:6185 \
+  -p 6199:6199 \
+  -v ~/AstrBot/data:/AstrBot/data \
+  ghcr.io/astrbots/astrbot:latest</pre>
+                    </div>
+                </div>
+
+                <div class="alert alert-success">
+                    <strong>🎉 安装成功！</strong> 访问 <code>http://localhost:6185</code> 打开管理面板，恭喜你又完成一步！
+                </div>
+            </section>
+
+            <!-- Section 6: AstrBot Config -->
+            <section class="section" id="astrbot-config">
+                <h2 class="section-title">
+                    <span class="icon-box">🎛️</span>
+                    配置 AstrBot
+                </h2>
+
+                <p>终于到了配置环节！让我们把大脑和身体连接起来~ 🧠✨</p>
+
+                <h3>管理面板配置</h3>
+                <div class="step-item">
+                    <div class="step-num">1</div>
+                    <h4>首次设置 ✨</h4>
+                    <p>访问 <code>http://localhost:6185</code>，创建管理员账号（记住密码哦~）</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">2</div>
+                    <h4>添加 QQ 连接</h4>
+                    <p>进入「连接」→ 点击「添加连接」→ 选择「OneBot」→ 选择「正向 WS」</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">3</div>
+                    <h4>填写连接信息</h4>
+                    <p>Token：填写 NapCat WebUI 中设置的 Token<br>
+                    端口：<code>6199</code></p>
+                </div>
+
+                <h3>🤖 配置 AI 模型</h3>
+                <div class="alert alert-info">
+                    <strong>🧠 提示：</strong>AstrBot 支持 18+ AI 模型，包括 Claude、GPT-4、Gemini、通义千问，文心一言等。挑一个你喜欢的吧！
+                </div>
+
+                <div class="step-item">
+                    <div class="step-num">1</div>
+                    <h4>获取 API Key 🔑</h4>
+                    <p>前往对应的 AI 平台官网注册并获取 API Key（如 OpenAI、Anthropic 等）</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">2</div>
+                    <h4>配置模型 ⚙️</h4>
+                    <p>进入「模型」→ 点击「添加模型」→ 选择提供商 → 填入 API Key 和 API Base（可选）</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">3</div>
+                    <h4>测试 🎯</h4>
+                    <p>保存后发送一条消息测试 Bot 是否正常响应</p>
+                </div>
+
+                <div class="highlight-box">
+                    <p>💡 推荐新手先用 Claude 3.5，性价比高，回复质量也很棒！</p>
+                </div>
+
+                <div class="table-box">
+                    <table>
+                        <thead>
+                            <tr><th>模型</th><th>特点</th><th>推荐场景</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>Claude 3.5 😺</strong></td><td>能力强，性价比高</td><td>日常对话、写作</td></tr>
+                            <tr><td><strong>GPT-4o 🚀</strong></td><td>全能型选手</td><td>复杂推理、代码</td></tr>
+                            <tr><td><strong>Gemini 2.0 🌟</strong></td><td>免费额度大</td><td>多模态内容</td></tr>
+                            <tr><td><strong>通义千问 🇨🇳</strong></td><td>中文优化</td><td>中文场景</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </section>
+
+            <!-- Section 7: Connect -->
+            <section class="section" id="connect">
+                <h2 class="section-title">
+                    <span class="icon-box">🔗</span>
+                    建立连接
+                </h2>
+
+                <p>现在是最关键的一步！让我们把 NapCat 和 AstrBot 连接起来 🤝</p>
+
+                <div class="highlight-box">
+                    <p>🔮 连接原理：NapCat 作为 WebSocket 客户端主动连接 AstrBot 服务端，两者就像好朋友通过微信聊天~</p>
+                </div>
+
+                <h3>📊 Docker 环境连接地址</h3>
+                <div class="table-box">
+                    <table>
+                        <thead>
+                            <tr><th>环境</th><th>NapCat 连接地址</th><th>说明</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>Docker AstrBot</strong></td><td><code>ws://host.docker.internal:6199/ws</code></td><td>宿主机运行 NapCat</td></tr>
+                            <tr><td><strong>本地 AstrBot</strong></td><td><code>ws://localhost:6199/ws</code></td><td>本地运行两者</td></tr>
+                            <tr><td><strong>远程服务器</strong></td><td><code>ws://服务器IP:6199/ws</code></td><td>需开放端口</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>✅ 验证连接</h3>
+                <div class="step-item">
+                    <div class="step-num">1</div>
+                    <h4>检查 NapCat 状态 🐱</h4>
+                    <p>在 NapCat WebUI 中查看连接状态是否为「已连接」</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">2</div>
+                    <h4>检查 AstrBot 日志 🤖</h4>
+                    <p>确认日志中出现「OneBot 连接成功」</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">3</div>
+                    <h4>发送测试消息</h4>
+                    <p>向机器人发送任意消息，应收到 AI 回复</p>
+                </div>
+            </section>
+
+            <!-- Section 8: Usage -->
+            <section class="section" id="usage">
+                <h2 class="section-title">
+                    <span class="icon-box">📖</span>
+                    使用指南
+                </h2>
+
+                <h3>💬 基础对话</h3>
+                <p>直接在 QQ 中向机器人发送消息即可获得 AI 回复。支持多轮对话、文件分析、图片生成等功能。快去试试和它聊天吧！🎉</p>
+
+                <div class="alert alert-success">
+                    <strong>🎯 测试建议：</strong>先发个「你好」试试水温，再问问它会什么~
+                </div>
+
+                <h3>🎛️ 管理后台</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <span class="icon">🔌</span>
+                        <h4>连接管理</h4>
+                        <p>管理多个 Bot 连接</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="icon">🤖</span>
+                        <h4>模型配置</h4>
+                        <p>添加/切换 AI 模型</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="icon">🔌</span>
+                        <h4>插件管理</h4>
+                        <p>安装/启用/禁用插件</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="icon">📊</span>
+                        <h4>日志查看</h4>
+                        <p>排查问题</p>
+                    </div>
+                </div>
+
+                <h3>🧩 插件扩展</h3>
+                <p>通过插件可以扩展 Bot 功能，如天气查询、新闻推送、定时任务等。🎨</p>
+                <div class="highlight-box">
+                    <p>💬 有趣的是：一个 Bot 能做什么，取决于你装了多少插件！插件市场里有超多好玩的东西等你探索~</p>
+                </div>
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-dots"><span></span><span></span><span></span></div>
+                        <span>插件安装</span>
+                    </div>
+                    <div class="code-body">
+                        <pre><span class="c"># 在 WebUI 中</span>
+<span class="v">管理面板</span> → <span class="v">插件</span> → <span class="v">插件市场</span> → <span class="v">安装</span></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 9: Security -->
+            <section class="section" id="security">
+                <h2 class="section-title">
+                    <span class="icon-box">🛡️</span>
+                    安全注意
+                </h2>
+
+                <div class="alert alert-danger">
+                    <strong>⚠️ 重要提醒：</strong>QQ Bot 存在一定风控风险，请勿用于发送违规内容！
+                </div>
+
+                <h3>账号安全</h3>
+                <div class="alert alert-warning">
+                    <ul style="margin: 0; padding-left: 20px;">
+                        <li>避免在同一 IP 同时登录 Bot 账号和常用账号</li>
+                        <li>频繁掉线可尝试更换账号或设备</li>
+                        <li>遇到社交风控，解除限制后重新运行即可</li>
+                        <li>可通过设置 <code>NAPCAT_PROXY_ADDRESS</code> 配置代理</li>
+                    </ul>
+                </div>
+
+                <h3>卸载说明</h3>
+                <div class="table-box">
+                    <table>
+                        <thead>
+                            <tr><th>平台</th><th>卸载方式</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>Windows</strong></td><td>直接删除 NapCat 目录即可，不影响 QQ</td></tr>
+                            <tr><td><strong>Linux (Docker)</strong></td><td>删除容器即可，无残留</td></tr>
+                            <tr><td><strong>Linux (本机)</strong></td><td>重装 QQ 即可完成卸载</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Section 10: FAQ -->
+            <section class="section" id="faq">
+                <h2 class="section-title">
+                    <span class="icon-box">❓</span>
+                    常见问题
+                </h2>
+
+                <div class="faq-item">
+                    <h4>🔑 NapCat 登录失败怎么办？</h4>
+                    <p>确保 QQ 版本最新，尝试重新扫码。如果持续失败，使用「Windows 一键版本」。也可以尝试以管理员身份运行。重启大法好！🙌</p>
+                </div>
+
+                <div class="faq-item">
+                    <h4>🔌 WebSocket 连接失败？</h4>
+                    <p>检查：1) 端口是否被占用；2) 两边 Token 是否一致；3) 防火墙是否阻止；4) AstrBot 是否已启动<br>
+                    <small>💡 提示：大部分连接问题都是 Token 不匹配造成的！</small></p>
+                </div>
+
+                <div class="faq-item">
+                    <h4>🤖 AI 模型不响应？</h4>
+                    <p>检查：1) API Key 是否正确；2) API Base URL 是否正确；3) 账户余额是否充足；4) 查看 AstrBot 日志错误信息<br>
+                    <small>💡 提示：先确认 API 有余额，很多"不响应"其实是钱包空空~</small></p>
+                </div>
+
+                <div class="faq-item">
+                    <h4>🔐 忘记 WebUI 密码？</h4>
+                    <p>修改 <code>data/cmd_config.json</code> 中 <code>dashboard</code> 的 <code>password</code> 键值删除，然后重启。找回密码 so easy~ ✨</p>
+                </div>
+
+                <div class="faq-item">
+                    <h4>如何更新？</h4>
+                    <p>NapCat：下载新版本覆盖。AstrBot（uv）：<code>uv tool upgrade astrbot --python 3.12</code></p>
+                </div>
+
+                <div class="faq-item">
+                    <h4>管理面板显示 404？</h4>
+                    <p>下载 <a href="https://github.com/AstrBotDevs/AstrBot/releases" target="_blank">dist.zip</a>，解压到 <code>AstrBot/data</code> 目录</p>
+                </div>
+
+                <div class="faq-item">
+                    <h4>在哪获取帮助？</h4>
+                    <p>
+                    - AstrBot 文档：<a href="https://docs.astrbot.app/" target="_blank">docs.astrbot.app</a><br>
+                    - NapCat 文档：<a href="https://napneko.github.io/" target="_blank">napneko.github.io</a><br>
+                    - GitHub Issues：项目仓库提交问题
+                    </p>
+                </div>
+            </section>
+
+            <!-- Resources -->
+            <section class="section">
+                <h2 class="section-title">
+                    <span class="icon-box">📚</span>
+                    学习资源
+                </h2>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <span class="icon">📖</span>
+                        <h4>AstrBot 文档</h4>
+                        <p><a href="https://docs.astrbot.app/" target="_blank">docs.astrbot.app</a></p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="icon">🐱</span>
+                        <h4>NapCat 文档</h4>
+                        <p><a href="https://napneko.github.io/" target="_blank">napneko.github.io</a></p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="icon">🔌</span>
+                        <h4>插件市场</h4>
+                        <p>WebUI → 插件页面</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="icon">💬</span>
+                        <h4>社区交流</h4>
+                        <p>加入 QQ 群获取帮助</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Clock Widget -->
+        <div class="clock-widget" id="clockWidget">
+            <div class="clock-date" id="clockDate"></div>
+            <div class="clock-time" id="clockTime"></div>
+            <div class="clock-weather" id="clockWeather"></div>
+        </div>
+
+        <!-- TOC Sidebar -->
+        <aside class="toc-sidebar">
+            <div class="toc-header">
+                <h3>📋 目录导航</h3>
+                <p>✨ 零基础搭建 AI 机器人 ✨</p>
+            </div>
+            <div class="toc-body">
+                <div class="toc-section">🚀 基础介绍</div>
+                <a href="#intro" class="toc-item">
+                    <span class="num">1</span>
+                    <span>🤖 项目简介</span>
+                </a>
+                <a href="#principle" class="toc-item">
+                    <span class="num">2</span>
+                    <span>⚙️ 工作原理</span>
+                </a>
+
+                <div class="toc-section">📦 安装配置</div>
+                <a href="#napcat-install" class="toc-item">
+                    <span class="num">3</span>
+                    <span>🐱 安装 NapCatQQ</span>
+                </a>
+                <a href="#napcat-config" class="toc-item">
+                    <span class="num">4</span>
+                    <span>⚙️ 配置 NapCatQQ</span>
+                </a>
+                <a href="#astrbot-install" class="toc-item">
+                    <span class="num">5</span>
+                    <span>⚡ 安装 AstrBot</span>
+                </a>
+                <a href="#astrbot-config" class="toc-item">
+                    <span class="num">6</span>
+                    <span>🎛️ 配置 AstrBot</span>
+                </a>
+                <a href="#connect" class="toc-item">
+                    <span class="num">7</span>
+                    <span>🔗 建立连接</span>
+                </a>
+                <a href="#usage" class="toc-item">
+                    <span class="num">8</span>
+                    <span>📖 使用指南</span>
+                </a>
+                <a href="#security" class="toc-item">
+                    <span class="num">9</span>
+                    <span>🛡️ 安全注意</span>
+                </a>
+                <a href="#faq" class="toc-item">
+                    <span class="num">10</span>
+                    <span>❓ 常见问题</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Progress Widget -->
+        <div class="progress-widget" id="progressWidget">
+            <div class="toc-progress-text">📊 阅读进度</div>
+            <div class="toc-progress-bar">
+                <div class="toc-progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to Top -->
+    <button class="back-to-top" id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 15l-6-6-6 6"/>
+        </svg>
+    </button>
+
+    <footer class="footer" style="max-width: 1200px; margin-left: 320px; padding-left: 60px; padding-right: 60px; box-sizing: border-box;">
+        <div class="footer-line"></div>
+        <p>🎉 恭喜你完成本教程！你的 AI 聊天机器人已整装待发~</p>
+        <p>📝 教程整理自 <a href="https://docs.astrbot.app/" target="_blank">AstrBot 文档</a> 和 <a href="https://napneko.github.io/" target="_blank">NapCatQQ 文档</a></p>
+        <p>© 2026 | 零基础 AI 聊天机器人搭建教程 | 祝你玩得开心！🤖✨</p>
+    </footer>
+
+    <script>
+        // Digital Clock
+        function updateClock() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+            const weekday = weekdays[now.getDay()];
+
+            let hours = now.getHours();
+            const ampm = hours >= 12 ? '下午' : '上午';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            const hoursStr = String(hours).padStart(2, '0');
+
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+
+            document.getElementById('clockDate').innerHTML = `📅 ${year}-${month}-${day} <span style="margin-left: 8px;">${weekday}</span>`;
+            document.getElementById('clockTime').innerHTML = `${ampm === '上午' ? '🌤️' : '🌙'} ${ampm} ${hoursStr}:${minutes}:${seconds}`;
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        // Weather Widget
+        function updateWeather() {
+            const el = document.getElementById('clockWeather');
+            if (!el) return;
+            el.textContent = '⏳ 加载天气中...';
+            fetch('https://wttr.in/?format=%c+%t+%h')
+                .then(res => res.text())
+                .then(text => {
+                    const parts = text.trim().split(' ');
+                    if (parts.length >= 3) {
+                        const icon = parts[0];
+                        const temp = parts[1];
+                        const humidity = parts[2];
+                        el.textContent = `${icon} ${temp} 💧${humidity}`;
+                    } else {
+                        el.textContent = '☀️ 天气加载失败';
+                    }
+                })
+                .catch(() => {
+                    el.textContent = '☀️ 天气加载失败';
+                });
+        }
+        updateWeather();
+        setInterval(updateWeather, 30 * 60 * 1000); // 每30分钟更新
+
+        // Sakura Petals - Real Sakura Shape
+        function createSakura() {
+            const container = document.getElementById('sakuraContainer');
+            const sakura = document.createElement('div');
+            sakura.className = 'sakura';
+
+            const size = Math.random() * 20 + 15;
+            const left = Math.random() * 100;
+            const duration = Math.random() * 12 + 10;
+            const delay = Math.random() * 15;
+            const hue = Math.random() * 30 + 340; // 340-370 = pinks
+
+            sakura.style.cssText = `
+                left: ${left}%;
+                animation-duration: ${duration}s;
+                animation-delay: ${delay}s;
+            `;
+
+            // Real 5-petal sakura shape using CSS
+            sakura.innerHTML = `
+                <svg width="${size}" height="${size}" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+                    <g transform="translate(25,25)">
+                        <ellipse cx="0" cy="-12" rx="6" ry="10" fill="hsl(${hue}, 80%, 85%)" transform="rotate(0)"/>
+                        <ellipse cx="0" cy="-12" rx="6" ry="10" fill="hsl(${hue}, 75%, 88%)" transform="rotate(72)"/>
+                        <ellipse cx="0" cy="-12" rx="6" ry="10" fill="hsl(${hue}, 80%, 85%)" transform="rotate(144)"/>
+                        <ellipse cx="0" cy="-12" rx="6" ry="10" fill="hsl(${hue}, 75%, 88%)" transform="rotate(216)"/>
+                        <ellipse cx="0" cy="-12" rx="6" ry="10" fill="hsl(${hue}, 80%, 85%)" transform="rotate(288)"/>
+                        <circle cx="0" cy="0" r="4" fill="hsl(${hue}, 60%, 70%)"/>
+                        <circle cx="0" cy="0" r="2" fill="hsl(45, 80%, 60%)"/>
+                    </g>
+                </svg>
+            `;
+
+            container.appendChild(sakura);
+            setTimeout(() => sakura.remove(), (duration + delay) * 1000);
+        }
+
+        // Create sakura petals
+        setInterval(createSakura, 600);
+
+        // Cursor Star Trail
+        let lastTrailTime = 0;
+        document.addEventListener('mousemove', (e) => {
+            const now = Date.now();
+            if (now - lastTrailTime < 60) return;
+            lastTrailTime = now;
+
+            const trail = document.createElement('div');
+            trail.className = 'star-trail';
+            trail.style.left = (e.clientX - 10) + 'px';
+            trail.style.top = (e.clientY - 10) + 'px';
+            trail.innerHTML = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L14.5 9H22L16 13.5L18 21L12 17L6 21L8 13.5L2 9H9.5L12 2Z" fill="#ffd700" stroke="#ffed4a" stroke-width="1"/>
+            </svg>`;
+            document.body.appendChild(trail);
+
+            setTimeout(() => trail.remove(), 800);
+        });
+
+        // TOC active state
+        const sections = document.querySelectorAll('.section');
+        const tocItems = document.querySelectorAll('.toc-item');
+        const tocBody = document.querySelector('.toc-body');
+
+        window.addEventListener('scroll', () => {
+            // Update active TOC
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            tocItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('href') === '#' + current) {
+                    item.classList.add('active');
+                    // Scroll active item into view
+                    if (tocBody) {
+                        item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }
+                }
+            });
+
+            // Update progress bar
+            const scrollTop = window.pageYOffset;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = Math.max(2, (scrollTop / docHeight) * 100);
+            document.getElementById('progressFill').style.width = progress + '%';
+
+            // Show/hide back to top button
+            const backToTop = document.getElementById('backToTop');
+            if (scrollTop > 500) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+    </script>
+</body>
+</html>

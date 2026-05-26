@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "minimax": {
+      "command": "node",
+      "args": ["${MINIMAX_MCP_PATH}"],
+      "env": {
+        "MINIMAX_API_KEY": "${MINIMAX_API_KEY}"
+      }
+    }
+  }
+}
