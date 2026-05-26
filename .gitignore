@@ -2,3 +2,9 @@
 .env
 .env.local
 .env.*.local
+node_modules/
+.claude/
+.mcp.json
+package-lock.json
+package.json
+.env.example
