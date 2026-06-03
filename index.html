@@ -2670,32 +2670,60 @@ astrbot</pre>
         updateClock();
         setInterval(updateClock, 1000);
 
-        // Weather Widget
+        // Weather Widget - 使用 wttr.in JSON 格式,更稳定
         function updateWeather() {
             const el = document.getElementById('clockWeather');
             if (!el) return;
             el.textContent = '⏳ 加载天气中...';
-            fetch('https://wttr.in/?format=%c+%t+%h')
+
+            // 10 秒超时,避免一直转圈
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+            fetch('https://wttr.in/?format=j1', { signal: controller.signal })
                 .then(res => {
-                    if (!res.ok) throw new Error('Network error');
-                    return res.text();
+                    clearTimeout(timeoutId);
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    return res.json();
                 })
-                .then(text => {
-                    if (text.includes('<!DOCTYPE') || text.includes('<html') || text.trim().length < 3) {
-                        el.textContent = '☀️ 天气加载失败';
-                        return;
-                    }
-                    const parts = text.trim().split(' ');
-                    if (parts.length >= 3) {
-                        el.textContent = `${parts[0]} ${parts[1]} 💧${parts[2]}`;
-                    } else {
-                        el.textContent = '☀️ 天气加载失败';
-                    }
+                .then(data => {
+                    const cur = data && data.current_condition && data.current_condition[0];
+                    if (!cur) throw new Error('Bad payload');
+                    const desc = (cur.weatherDesc && cur.weatherDesc[0] && cur.weatherDesc[0].value) || '';
+                    const temp = cur.temp_C;
+                    const humidity = cur.humidity;
+                    el.textContent = `${weatherEmoji(desc, cur.weatherCode)} ${temp}°C 💧${humidity}%`;
                 })
-                .catch(() => {
+                .catch((err) => {
+                    clearTimeout(timeoutId);
+                    console.warn('[weather] fetch failed:', err && err.message);
                     el.textContent = '☀️ 天气加载失败';
                 });
         }
+
+        // 把 wttr.in 的天气描述映射到 emoji
+        function weatherEmoji(desc, code) {
+            const d = (desc || '').toLowerCase();
+            const c = parseInt(code, 10);
+            // 先按描述判断,描述判断不出再按天气码兜底
+            if (d.includes('thunder') || d.includes('storm')) return '⛈️';
+            if (d.includes('snow') || d.includes('sleet') || d.includes('blizzard')) return '❄️';
+            if (d.includes('rain') || d.includes('drizzle') || d.includes('shower')) return '🌧️';
+            if (d.includes('fog') || d.includes('mist') || d.includes('haze')) return '🌫️';
+            if (d.includes('cloudy') || d.includes('overcast')) return '☁️';
+            if (d.includes('partly')) return '⛅';
+            if (d.includes('clear') || d.includes('sunny')) return '☀️';
+            // wttr.in weatherCode 兜底(参考 worldweatheronline 编码)
+            if ([113].includes(c)) return '☀️';
+            if ([116].includes(c)) return '⛅';
+            if ([119, 122].includes(c)) return '☁️';
+            if ([143, 248, 260].includes(c)) return '🌫️';
+            if ([176, 179, 182, 185, 263, 266, 281, 284, 296, 299, 302, 305, 308, 311, 314, 317, 320, 323, 326, 329, 332, 335, 338, 350, 353, 356, 359, 362, 365, 368, 371, 374, 377].includes(c)) return '🌧️';
+            if ([179, 182, 185, 227, 230, 323, 326, 329, 332, 335, 338, 350, 368, 371, 374, 377].includes(c)) return '❄️';
+            if ([200, 386, 389, 392, 395].includes(c)) return '⛈️';
+            return '🌤️';
+        }
+
         updateWeather();
         setInterval(updateWeather, 30 * 60 * 1000); // 每30分钟更新
 
